@@ -1,20 +1,12 @@
-# built application files
-*.apk
-*.ap_
+# Ignore the build folder
+.build/
 
-# files for the dex VM
-*.dex
+# Ignore the docs folder
+.docs/
 
-# Java class files
-*.class
+# Ignore Jungle IDE files
+*.jungle*
+*.jiproj*
 
-# generated files
-bin/
-gen/
-
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Eclipse project files
-.classpath
-.project
+# Ignore thumbs
+Thumbs.db

@@ -1,0 +1,14 @@
+﻿UTF-8 TEST
+
+こんにちは！お元気ですか？
+これは、Unicodeテキストのテストです。
+❖❶❷❸➃➄➅➐➑➒➓
+
+Here's Private Use characters 
+
+And Supplimentary (U+?xxxx) Planes... 𠹭󠄇
+
+And emoji 😸!!
+
+
+Press [Space] to toggle between native Monkey.String and UTF8String
