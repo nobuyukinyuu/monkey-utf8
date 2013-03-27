@@ -17,7 +17,12 @@ Class TestApp Extends App
 	
 	Method OnCreate()
 		str = UTF8.LoadString("test.txt", True)
-		Print str.ToString()
+
+		#If TARGET="html5"
+			Print str.ToString(False)
+		#Else
+			Print str.ToDebugString()
+		#End		
 		
 		af = New AngelFont()
 		af.LoadFontXml("yza")
@@ -33,11 +38,13 @@ Class TestApp Extends App
 	Method OnRender()
 		Cls
 		'af.DrawText(str.ToString, 8, 8)
+
 		AngelFont.current = af  'Set current font
 		If useUTF > 0 Then
 			SimpleTextBox.Draw(str.chars, DeviceWidth() / 2, 16, DeviceWidth(), AngelFont.ALIGN_CENTER)
 		Else 'Use regular, non-utf
 			SimpleTextBox.Draw(str.ToString, DeviceWidth() / 2, 16, DeviceWidth(), AngelFont.ALIGN_CENTER)
 		End If
+				
 	End Method
 End Class
