@@ -1,6 +1,7 @@
 #GLFW_WINDOW_TITLE="Monkey UTF-8 Test"
 
 Import utf8
+
 Import mojo
 Import AngelFont.angelfont
 Import AngelFont.simpletextbox
@@ -16,6 +17,8 @@ Class TestApp Extends App
 	Field useUTF:Int = 1
 	
 	Method OnCreate()
+		SetUpdateRate 60
+
 		str = UTF8.LoadString("test.txt", True)
 
 		#If TARGET="html5"
@@ -27,7 +30,9 @@ Class TestApp Extends App
 		af = New AngelFont()
 		af.LoadFontXml("yza")
 
-		SetUpdateRate 60
+		'Test functions of utf8string
+		Local n:= New UTF8String("Oh Noes")
+		Print n.FindLast("Oh No", 9999) 'Should print 0
 	End Method
 	
 	Method OnUpdate()
