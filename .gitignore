@@ -5,8 +5,11 @@
 .docs/
 
 # Ignore Jungle IDE files
-*.jungle*
-*.jiproj*
+*.jipo
+*.JILayout
 
 # Ignore thumbs
 Thumbs.db
+
+# Ignore debug log
+debug.log
