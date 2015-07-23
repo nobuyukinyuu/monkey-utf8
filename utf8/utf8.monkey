@@ -4,18 +4,10 @@
 
 Import utf8string
 
-#If TARGET<>"html5"
- 'HTML5 doesn't support this target, so use something else.
- Import brl.filestream
-#Else 
- Import mojo
-#End
-
-#If LANG="cpp" or LANG="java"
- Import brl.tcpstream
-#End
+Import brl.databuffer
 
 Class UTF8
+  Protected
 	'Mask values for bit pattern of first byte in multi-byte UTF-8 sequences: 
 	'  128 - 10xxxxxx - Multibyte Character continuation
 	'  192 - 110xxxxx - Latin Characters;    for U+0080 to U+07FF.      2 bytes
@@ -23,52 +15,17 @@ Class UTF8
 	'  240 - 11110xxx - SMP (emoji, etc.);   for U+010000 to U+1FFFFF.  4 bytes
     Global mask:Int[] =[128, 192, 224, 240]
 	Const StripContinuingChar:Int = 63  '00111111.  bitwise AND this against a byte to use...
-	
-	'Summary:  Loads a string from a local resource.
+
+  Public
+	'Summary:  Loads a string from a local resource. Optionally converts line feeds.
 	Function LoadString:UTF8String(path:String, crlfToLF:Bool = True)
-	 #If TARGET="html5"
-	 	'HTML5 doesn't use UTF-8, it uses UTF-16 / UCS-2, which means we have to cheat a bit
- 		Return New UTF8String(DecodeSurrogatePairs(LoadRaw("monkey://data/" + path)))
-	 #Else
- 		Return DecodeString(LoadRaw("monkey://data/" + path), crlfToLF, True)	 
-	 #End
+ 		Return DecodeString(LoadRaw("monkey://data/" + path), crlfToLF, True)
 	End Function
 
 	'Summary: Loads a stream of chars hot and steaming from the computer.  (For experts only)
 	Function LoadRaw:Int[] (path:String)
-
-		Local chars:Int[]
-
-	 #If TARGET="html5"
-		'Return[] 'HTML5 doesn't support FileStreams. TODO: Write code to get text files into a databuffer..
-		Local str:String = app.LoadString(path)
-		chars = chars.Resize(str.Length)
-		For Local i:Int = 0 Until chars.Length
-			chars[i] = str[i]
-		Next
-		Return chars
-	 #Else
-	
-		Local file:FileStream = New FileStream(path, "r")
-		chars = chars.Resize(file.Length)
-
-		For Local i:Int = 0 Until chars.Length
-			chars[i] = file.ReadByte()
-		Next
-		
-		file.Close()
-		Return chars
-	 #End
-	End Function
-		
-	'Summary:  TODO - Gets a String response from a URL
-	Function GetString:UTF8String(url:String, crlfToLF:Bool = True)
-	 #If LANG="cpp" or LANG="java"
-		Local poo:TcpStream = New TcpStream
-		'TODO:  Implement stuff here.  We need UTF8String.Append() to make anything useful
-	 #End
-	 
-	 Error "GetString() is not implemented yet"
+		Local file:DataBuffer = DataBuffer.Load(path)
+			Return file.PeekBytes(0)  'Note: brl.DataBuffer says this is Depreciated, but not until PeekString stops using it (!)
 	End Function
 	
 	'Summary:  Takes a raw string of chars and attempts to turn it into a UTF8String.
@@ -129,8 +86,9 @@ Class UTF8
 	End Function
 	
 	'Summary:  Converts a string of chars containing UTF-16 surrogate pairs into a string of proper codepoints.
-	'Note:  This code may or may not have endian-ness issues. I don't know. If you run into one, file a bug.
 	Function DecodeSurrogatePairs:Int[] (chars:Int[])
+	'       This function's useful when you're dealing with UTF-16 / UCS-2, like for printing to old terminals.
+	'Note:  This code may or may not have endian-ness issues. I don't know. If you run into one, file a bug.
 	
 		Local j:Int 'output length iterator
 		Local output:Int[]

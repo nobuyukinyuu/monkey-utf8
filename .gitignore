@@ -1,8 +1,8 @@
 # Ignore the build folder
-*.build/
+*.build*/
 
 # Ignore the docs folder
-.docs/
+/*.docs/
 
 # Ignore Jungle IDE files
 *.jipo
@@ -13,3 +13,8 @@ Thumbs.db
 
 # Ignore debug log
 debug.log
+
+
+
+#Ignore generated mappings file from casefolding-builder
+casefolding-builder/mappings.monkey
